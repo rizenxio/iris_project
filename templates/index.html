@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Prediction Demo</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+  <h1>Prediction Demo</h1>
+  <div>
+    <label for="input-data">Input Data:</label>
+    <textarea id="input-data" rows="4" cols="50"></textarea>
+  </div>
+  <button id="predict-btn">Predict</button>
+  <div id="result"></div>
+  <script>
+    $(document).ready(function() {
+      $('#predict-btn').click(function() {
+        var inputData = $('#input-data').val();
+        var requestData = JSON.parse(inputData);
+
+        $.ajax({
+          url: '/predict',
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify(requestData),
+          success: function(response) {
+            var predictions = response.predictions;
+            var resultHTML = '';
+
+            for (var i = 0; i < predictions.length; i++) {
+              resultHTML += '<p>Prediction ' + (i+1) + ': ' + predictions[i] + '</p>';
+            }
+
+            $('#result').html(resultHTML);
+          },
+          error: function(error) {
+            console.log(error);
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
